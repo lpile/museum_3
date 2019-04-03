@@ -23,7 +23,6 @@ class Museum
   end
 
   def admit(patron)
-    @patrons << patron
+    @patrons << patron if @patrons_by_exhibit_interest.each_pair {|k,v| true if patron.interests.include?(v) && (patron.spending_money >= k.cost)}
   end
-
 end

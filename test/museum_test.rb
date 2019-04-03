@@ -6,13 +6,13 @@ require './lib/museum'
 
 class MuseumTest < Minitest::Test
   def setup
-    @dmns = dmns = Museum.new("Denver Museum of Nature and Science")
+    @dmns = Museum.new("Denver Museum of Nature and Science")
     @gems_and_minerals = Exhibit.new("Gems and Minerals", 0)
     @dead_sea_scrolls = Exhibit.new("Dead Sea Scrolls", 10)
     @imax = Exhibit.new("IMAX", 15)
     @bob = Patron.new("Bob", 20)
     @sally = Patron.new("Sally", 20)
-
+    @tj = Patron.new("TJ", 7)
   end
 
   def test_museum_class_exist
@@ -52,6 +52,8 @@ class MuseumTest < Minitest::Test
     @bob.add_interest("Dead Sea Scrolls")
     @bob.add_interest("Gems and Minerals")
     @sally.add_interest("IMAX")
+    @dmns.recommend_exhibits(@bob)
+    @dmns.recommend_exhibits(@sally)
     @dmns.admit(@bob)
     @dmns.admit(@sally)
 
@@ -72,5 +74,17 @@ class MuseumTest < Minitest::Test
                  @imax => []}
 
     assert_equal expected, @dmns.patrons_by_exhibit_interest
+  end
+
+  def test_admit_returns_correct_spending_money
+    @dmns.add_exhibit(@gems_and_minerals)
+    @dmns.add_exhibit(@dead_sea_scrolls)
+    @dmns.add_exhibit(@imax)
+    @tj.add_interest("IMAX")
+    @tj.add_interest("Dead Sea Scrolls")
+    @dmns.recommend_exhibits(@tj)
+    @dmns.admit(@tj)
+
+    assert_equal 7, @tj.spending_money
   end
 end
